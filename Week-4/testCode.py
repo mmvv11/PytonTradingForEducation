@@ -1,36 +1,13 @@
-import sys
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
+import pybithumb
+from privateAPI.pybitumbPrivateAPI import pybithumbPrivateAPI
 
+# 시가, 고가, 저가, 종가, 거래량
+btcInfo = pybithumb.get_candlestick("BTC")
+# 종가만 가져오고
+btcClosePrice = btcInfo['close']
+# 5일 이동평균을 계산합니다.
+btcMA = btcClosePrice.rolling(5).mean()
 
-class MySignal(QObject):
-    signal1 = pyqtSignal()
-    signal2 = pyqtSignal(int, int)
+a = pybithumbPrivateAPI.get_balance("BTC")[2]
 
-    def run(self):
-        self.signal1.emit()
-        self.signal2.emit(1, 2)
-
-
-class MyWindow(QMainWindow):
-    def __init__(self):
-        super().__init__()
-
-        mysignal = MySignal()
-        mysignal.signal1.connect(self.signal1_emitted)
-        mysignal.signal2.connect(self.signal2_emitted)
-        mysignal.run()
-
-    @pyqtSlot()
-    def signal1_emitted(self):
-        print("signal1 emitted")
-
-    @pyqtSlot(int, int)
-    def signal2_emitted(self, arg1, arg2):
-        print("signal2 emitted", arg1, arg2)
-
-
-app = QApplication(sys.argv)
-window = MyWindow()
-window.show()
-app.exec_()
+pybithumbPrivateAPI.get_balance("BTC")
